@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bartronic",
+  "private_key_id": "38ca80d51b4206b38f53c2236f3f3e37ecd61dfe",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC4FDwn8bO+2sQQ\nuoAnslAt6PG5tnB4zJWY8d2NJPuRv1PeElqzTrrIYYBurLbkQu+z6k3E0LwbTmby\n7MD7l1AarS+oRUI+oopDBYl7yvvFjPqhJepFIV5tkWsd+1HKHeWnznWaAuVPWVWc\nABOeCfQKBGcjDb/CmRVTu2ctBJWYsHSuvWCYYP+21hUJSOCSPBGU+5NMvd9ljrte\nd5wMZiPbMbTzmFJjZTLkt+dS1xgBHLhaYVvNwvjXUAwitppbG4IZd08RWxFhiJem\nJiP+MGKunEk598B0r4aq6dAKFxb/PCCpMG3pBH1n/J9tmCsF7s5kqOm5aqcN+knT\nRLXbg0xDAgMBAAECggEABepQjJAN0KJDDq6Pk7b9MJx9uBQOxTL9065iCjkYBHT7\ngvVgCMcM5YeMkwHl1qv3+/YZjauPf+kjEcdd5DfWkSTjlSq0mEKs4r54zouVT6Ha\nI/eN8a7C1A6KPKpo1G/lg2D1En/pUoVyZNLzzm5Pc0r07YFxmhVFRC2PgTjWfdOP\nxJzrt/NMAHbZXGNZbnezvaDGIW+ZhEHCONJEE0FszNuORSr/e1gno4LiaGnCToIS\ne3ahLXEwa9AX8fP1XEGXMCKr5EXueoz9hhCsRThebYyOYvQbtJS0gnP8RD8lVKpr\nQBfBPRTXhXwc09+vspvyNXyx6doM783dQGM0bHP6QQKBgQDxVseAlPx1kMKeFCIO\nKY89/E0EIXuYLVknVW+XNNZN0hwYrJdXfF+RLyCsJClGpsvyDdPoS9p7nWEYd928\nsnERQNUiWSRHVYoLMu8c5UOYslUFiYW7ZtzaTrVyMCIwT0GYXO8gDKnx3bJDkA4k\nm2of86DxEQEJyZ/vnQzOzG39UwKBgQDDQvgF1VIRl8AY9wKepc1g7XdmyVD+DzYB\nnA55Wizhq69ddzrDMAAp5O8/pNACbfY3KSps70Pqv9PAm4ro0OhCcdAev0kssWCD\n0A+aMeNZrSV6sVuStMsBEQWZ32BoxtyjtSiWc1F5/we1FxhMo+/LryifIAeLDRGI\nX34QbhenUQKBgAniP/FoKJ63+wB2Wp6x3Qfw2UaeCG3HDauquBM9OrmdLUFlcB1J\nHrDXeUMTiA04r4mOP2t4D86YN23FGvOray4FtbTeabnyKuEiiOBqE0ahpxG+/Bcc\ns1bNemjex8eqt0kCJVjuq9cX+UEDGVEufD4qwCCfTaeU9lPd3rRpcue5AoGALT+Q\noDFt4jvLPT3IcqEzdbmxyLTwOt+lgTv7sq1t5yHU8pDVojO2Zf7yXkpAFcALpX65\noSLVF0o6tNCWoRsAJ52eP/HN8DhuiD0n0HCtIbPZEpSVBus0e9vI835rJfynVpx9\nelfg0qeBzro6XFBFGmtNu4o9lUCDBpoyaXZJrvECgYAaFHLVPEF9Ltwswrre/Gkw\nEV8FeZutn6YAVspmsSlpWAiSC9RV/IToSC/7KcxdB0x0sRu9YirTnZAQNT/XeVfc\n6rGYOpwoEFpNj5EffrswurKMx5aQnzHrUGFMbpuO6u1YD935bfnqo5qruNpLcgWn\nUoxlPPWebyIUKc5BEfrExw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "servizio-bartronic@bartronic.iam.gserviceaccount.com",
+  "client_id": "115111451934143111915",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/servizio-bartronic%40bartronic.iam.gserviceaccount.com"
+}
