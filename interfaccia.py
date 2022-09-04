@@ -2,17 +2,17 @@ import streamlit as st
 import gspread
 import pandas as pd
 import time
-
-tab1, tab2 = st.tabs(["Cocktails", "Calibration"])
+# https://docs.streamlit.io/knowledge-base/deploy/authentication-without-sso
+tab1, tab2, tab3 = st.tabs(["Cocktails", "Calibration", "Cleaning"])
 cread_file = "bartronic-38ca80d51b42.json"
 
 gc = gspread.service_account(cread_file)
 db = gc.open("tabella_live")
 wks_live = db.get_worksheet(0)
 data1 = wks_live.get_all_records()
-df_live = pd.DataFrame(data1).iloc[[0], :].astype(float)
-df_calib = pd.DataFrame(data1).iloc[[1], 2:].astype(float)
-df_pompe = pd.DataFrame(data1).iloc[[2], 2:].T
+df_live = pd.DataFrame(data1).iloc[[0], 10]
+df_calib = pd.DataFrame(data1).iloc[[1], 2:10].astype(float)
+df_pompe = pd.DataFrame(data1).iloc[[2], 2:10].T
 
 db = gc.open("tabella_cocktails")
 wks_cocktail = db.get_worksheet(0)
@@ -26,19 +26,6 @@ with tab1:
     orginal_ingredients.remove('name')
     orginal_ingredients.append('empty')
     pump_list = orginal_ingredients.copy()
-
-    if st.button("Is the robot available?"):
-        wks_live.update_cell(2, 2, 0)
-        time.sleep(2)
-        gc = gspread.service_account(cread_file)
-        db = gc.open("tabella_live")
-        wks_live = db.get_worksheet(0)
-        data1 = wks_live.get_all_records()
-        df_live = pd.DataFrame(data1)
-        if df_live.loc[df_live.index[0], 'onoff'] == 0:
-            st.error('Not Available')
-        else:
-            st.success('Available')
 
     st.sidebar.write("Pumps content")
     table_pompe = st.sidebar.empty()
@@ -85,35 +72,57 @@ with tab1:
 
     speed = 200.1/60  # ml/sec
 
+    st.write(df_live)
+    st.write(df_pompe)
+
+    quantity = []
+    num_pompa = []
+
     # si cicla su tutti i componenti del cocktail selezionato
-    for liquid in componetns.columns:
+    for jj, liquid in enumerate(componetns.columns):
         # si seleziona la pompa che ha quel liquido richiesto
         if liquid in pump_state:
             # si estrae il numero della pompa
-            num_pompa = pump_state.index(liquid) + 1
+            num_pompa.append(pump_state.index(liquid) + 1)
             # si estrae la quantita di quel liquido dal db
-            quantity = df_cocktails.loc[df_cocktails['name'] == choice, liquid].values[0]
+            quantity.append(df_cocktails.loc[df_cocktails['name'] == choice, liquid].values[0])
             # conversione da ml a secondi
-            quantity = round(quantity/speed, 1)*df_calib.loc[df_calib.index[0], 'p'+str(num_pompa)]
+            quantity[jj] = round(quantity[jj]/speed, 1)*df_calib.loc[df_calib.index[0], 'p'+str(num_pompa[jj])]
             # si va a scrivere quella quantita sulla pompa selezionata nel df che deve essere caricato a db
-            df_live.loc[df_live.index[0], 'p'+str(num_pompa)] = quantity
+            # df_live.loc[df_live.index[0], 'p'+str(num_pompa)] = quantity
 
-    st.table(df_live)
+    df_to_serve = pd.DataFrame([0 for i in range(8)], [i+1 for i in range(8)], columns=['quantity'])
 
-    max_time = df_live.loc[df_live.index[0], :].max()
+    for ii, num in enumerate(num_pompa):
+        df_to_serve.iloc[num-1, 0] = quantity[ii]
+
+    df_to_serve = df_to_serve.sort_values(by=['quantity'])
+
+    # df_to_serve = pd.DataFrame(quantity, num_pompa, columns=['quantity']).sort_values(by=['quantity'])
+
+    val_to_publish = ''
+    # imposto il numero delle pompe
+    for i in range(df_to_serve.shape[0]):
+        val_to_publish += (str(df_to_serve.index[i]) + "-")
+
+    # val_to_publish += 'n-'
+
+    # imposto i tempi
+    for i in range(df_to_serve.shape[0]):
+        val_to_publish += (str(df_to_serve.iloc[i, 0].round(1)) + "-")
+
+    max_time = df_to_serve.iloc[:, 0].max()
+
+    st.write(df_to_serve)
+    st.write(val_to_publish)
 
     if st.button("Serve"):
-        cell_list = wks_live.range('C2:J2')
-        for i, cell in enumerate(cell_list):
-            cell.value = df_live.loc[df_live.index[0], 'p'+str(i+1)]
-            wks_live.update_cells(cell_list)
-
-        wks_live.update_cell(2, 1, 1)
-
+        val_to_publish_up = "1-"+val_to_publish
+        wks_live.update_cell(2, 11, val_to_publish_up)
         with st.spinner('Serving'):
-            time.sleep(max_time)
-        # todo mettere un controllo che fa tornare disponibile la scelta dei cocktail quando il db fa tornare
-        #  disponibile il valore go della tabella
+            time.sleep(max_time+5)
+        val_to_publish_up = "0-"+val_to_publish
+        wks_live.update_cell(2, 11, val_to_publish_up)
         st.success('Done!')
 
 with tab2:
@@ -124,5 +133,30 @@ with tab2:
     if st.button("load"):
         wks_live.update_cell(3, pump_selected_calib+2, number)
 
+with tab3:
+    st.header("Cleaning")
+    number = st.number_input('Cleaning time', value=3)
+    cleaning_selection = st.multiselect("Pumps to clean", [i+1 for i in range(8)])
 
+    df_to_clean = pd.DataFrame([0 for i in range(8)], [i+1 for i in range(8)], columns=['quantity'])
+    for ii, num in enumerate(cleaning_selection):
+        df_to_clean.iloc[num-1, 0] = number
+    df_to_clean = df_to_clean.sort_values(by=['quantity'])
 
+    val_to_clean = ''
+    # imposto il numero delle pompe
+    for i in range(df_to_clean.shape[0]):
+        val_to_clean += (str(df_to_clean.index[i]) + "-")
+    # val_to_clean += 'n-'
+    # imposto i tempi
+    for i in range(df_to_clean.shape[0]):
+        val_to_clean += (str(df_to_clean.iloc[i, 0].round(1)) + "-")
+
+    if st.button("Cleaning"):
+        val_to_clean_up = "1-"+val_to_clean
+        wks_live.update_cell(2, 11, val_to_clean_up)
+        with st.spinner('Cleaning!'):
+            time.sleep(number+5)
+        val_to_clean_up = "0-"+val_to_clean
+        wks_live.update_cell(2, 11, val_to_clean_up)
+        st.success('Done!')
